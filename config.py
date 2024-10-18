@@ -3,10 +3,14 @@ TEST_PATH = './data/test/test.csv'
 PROCESSED_TRAIN_PATH = './data/train/processed_train.csv'
 PROCESSED_VAL_PATH = './data/train/processed_val.csv'
 PROCESSED_TEST_PATH = './data/test/processed_test.csv'
+SENTIMENT_INCLUDED_TRAIN_PATH = './data/train/train_with_sentiment.csv'
+
+SENTIMENT_FOLDER_PATH = './data/train_sentiment/'
 
 RANDOM_STATE = 526
 
 numerical_features = ['Age', 'Quantity', 'Fee', 'VideoAmt', 'PhotoAmt']
+senti_features = ['PositiveSentimentScore', 'NegativeSentimentScore']
 categorical_features = ['Type', 'Breed1', 'Breed2', 'Gender', 'Color1', 'Color2', 'Color3', 'MaturitySize', 'FurLength', 
                         'Vaccinated', 'Dewormed', 'Sterilized', 'Health', 'State', 'AdoptionSpeed']
 textual_features = ['Name', 'Description']
