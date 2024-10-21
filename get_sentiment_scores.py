@@ -55,5 +55,7 @@ def add_sentiment_scores_to_dataframe(df, json_folder_path='./data/train_sentime
 if __name__ == "__main__":
     df = load_csv_data(TRAIN_PATH)
     df = add_sentiment_scores_to_dataframe(df, SENTIMENT_FOLDER_PATH)
+    df = df.drop(id_features+textual_features, axis=1)
+    df = df.dropna()
     df.to_csv(SENTIMENT_INCLUDED_TRAIN_PATH, index=False)
     print(f"Processed data saved to {SENTIMENT_INCLUDED_TRAIN_PATH}")

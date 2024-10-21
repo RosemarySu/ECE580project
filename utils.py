@@ -19,7 +19,9 @@ def normalization(dataframe, numerical_features, scaler = None):
 def get_data(data_path):
     data = pd.read_csv(data_path)
     data = data.dropna()
-    data = data.drop(id_features+textual_features, axis=1)
+    columns_to_drop = id_features + textual_features
+    existing_columns = [col for col in columns_to_drop if col in data.columns]
+    data = data.drop(existing_columns, axis=1)
     data = type_conversion(data, categorical_features, numerical_features)
     X = data.drop(target, axis=1)
     y = data[target]
