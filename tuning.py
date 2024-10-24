@@ -1,9 +1,14 @@
-# tuning.py
 from sklearn.model_selection import RandomizedSearchCV
 from xgboost import XGBClassifier
 from scipy.stats import uniform, randint
+from sklearn.metrics import f1_score
+from tqdm import tqdm
 import json
-import os
+
+class ProgressRandomSearchCV(RandomizedSearchCV):
+    def _get_param_iterator(self):
+        iterator = super()._get_param_iterator()
+        return tqdm(iterator, desc="Hyperparameter search", total=self.n_iter)
 
 
 def tune_xgboost(X_train, y_train, X_val, y_val, n_iter=100, cv=5):
@@ -16,23 +21,26 @@ def tune_xgboost(X_train, y_train, X_val, y_val, n_iter=100, cv=5):
         'gamma': uniform(0, 5)
     }
 
+    xgb = XGBClassifier(objective='multi:softmax', eval_metric='mlogloss', n_jobs=-1)
 
-    xgb = XGBClassifier(use_label_encoder=False, eval_metric='logloss')
-
-    random_search = RandomizedSearchCV(
+    random_search = ProgressRandomSearchCV(
         xgb, param_distributions=param_dist, n_iter=n_iter, 
-        scoring='f1', n_jobs=-1, cv=cv, verbose=1, random_state=42
+        scoring='f1_macro', n_jobs=-1, cv=cv, verbose=0, random_state=42
     )
 
+    print(f"\nStarting hyperparameter search with {n_iter} iterations and {cv}-fold cross-validation...")
     random_search.fit(X_train, y_train)
 
     best_params = random_search.best_params_
     best_score = random_search.best_score_
 
-    best_model = XGBClassifier(**best_params, use_label_encoder=False, eval_metric='logloss')
+    print("\nTraining final model with best parameters...")
+    best_model = XGBClassifier(**best_params, eval_metric='mlogloss')
     best_model.fit(X_train, y_train)
 
-    val_score = best_model.score(X_val, y_val)
+    print("\nEvaluating on validation set...")
+    val_pred = best_model.predict(X_val)
+    val_score = f1_score(y_val, val_pred, average='macro')
 
     return best_model, best_params, best_score, val_score
 
@@ -47,5 +55,14 @@ def load_params(filename):
 
 def tune_and_save(X_train, y_train, X_val, y_val, params_file, n_iter=100, cv=5):
     best_model, best_params, best_score, val_score = tune_xgboost(X_train, y_train, X_val, y_val, n_iter, cv)
+    
+    print("\nSaving best parameters...")
     save_params(best_params, params_file)
+    
+    print(f"\nBest cross-validation score: {best_score:.4f}")
+    print(f"Validation score: {val_score:.4f}")
+    print("\nBest parameters:")
+    for param, value in best_params.items():
+        print(f"{param}: {value}")
+    
     return best_model, best_params, best_score, val_score

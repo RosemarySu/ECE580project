@@ -4,7 +4,18 @@ from utils import get_data, normalization
 
 def load_data():
     X, y = get_data(TRAIN_PATH)
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=RANDOM_STATE)
+    X = X.astype(float)
+    y = y.astype(float)
+    
+    X_train, X_val, y_train, y_val = train_test_split(
+        X, y, 
+        test_size=0.2, 
+        random_state=RANDOM_STATE
+    )
+
+    X_train = X_train.fillna(X_train.mean())
+    X_val = X_val.fillna(X_val.mean())
+    
     X_train, train_scaler = normalization(X_train, numerical_features)
     X_val = normalization(X_val, numerical_features, train_scaler)
     
@@ -12,7 +23,17 @@ def load_data():
 
 def load_senti_data():
     X_senti, y_senti = get_data(SENTIMENT_INCLUDED_TRAIN_PATH)
-    X_train_senti, X_val_senti, y_train_senti, y_val_senti = train_test_split(X_senti, y_senti, test_size=0.2, random_state=RANDOM_STATE)
+    X_senti = X_senti.astype(float)
+    y_senti = y_senti.astype(float)
+    
+    X_train_senti, X_val_senti, y_train_senti, y_val_senti = train_test_split(
+        X_senti, y_senti, 
+        test_size=0.2, 
+        random_state=RANDOM_STATE
+    )
+    X_train_senti = X_train_senti.fillna(X_train_senti.mean())
+    X_val_senti = X_val_senti.fillna(X_val_senti.mean())
+    
     X_train_senti, train_scaler_senti = normalization(X_train_senti, numerical_features+senti_features)
     X_val_senti = normalization(X_val_senti, numerical_features+senti_features, train_scaler_senti)
 
