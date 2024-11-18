@@ -3,3 +3,4 @@ data/*
 !data/train/
 reference/*
 gam.ipynb
+logistic + dt + rf.ipynb

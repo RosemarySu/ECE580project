@@ -9,7 +9,7 @@ SENTIMENT_FOLDER_PATH = './data/train_sentiment/'
 
 RANDOM_STATE = 526
 
-numerical_features = ['Age', 'Quantity', 'Fee', 'VideoAmt', 'PhotoAmt']
+numerical_features = ['Age', 'Fee', 'VideoAmt', 'PhotoAmt']
 senti_features = ['PositiveSentimentScore', 'NegativeSentimentScore']
 categorical_features = ['Type', 'Breed1', 'Breed2', 'Gender', 'Color1', 'Color2', 'Color3', 'MaturitySize', 'FurLength', 
                         'Vaccinated', 'Dewormed', 'Sterilized', 'Health', 'State', 'AdoptionSpeed']
