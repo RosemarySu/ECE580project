@@ -2,5 +2,5 @@ __pycache__/
 data/*
 !data/train/
 reference/*
-gam.ipynb
+# gam.ipynb
 logistic + dt + rf.ipynb
